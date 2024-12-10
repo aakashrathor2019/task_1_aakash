@@ -6,8 +6,13 @@ from django.shortcuts import get_object_or_404
 from .models import User,Task,Comment
 import re
 from .forms import TaskForm
+from django.contrib.auth import get_user_model
+from django.db import IntegrityError
+from django.contrib.auth.hashers import make_password
 
 
+
+User = get_user_model()
 
 class Signup(View):
     def get(self, request):
@@ -37,42 +42,38 @@ class Signup(View):
 
             if errors:
                 return render(request, "signup.html", {"errors": errors})
-            else:
-                User.objects.create_user(username=username, email=email, password=password)
-                return redirect("login")
+
+            user = User(first_name=username, email=email)
+            user.set_password(password)  
+            user.save()
+
+            return redirect("login")
+        except IntegrityError as e:
+            return render(request, 'signup.html', {'error': 'Email or Username already exists.', 'details': str(e)})
         except Exception as e:
-            return render(request, 'signup.html', {'error': 'Enter valid data', 'details': str(e)})
+            return render(request, 'signup.html', {'error': 'An error occurred', 'details': str(e)})
 
     
-
 class Login(View):
     def get(self, request):
         return render(request, 'login.html')
 
     def post(self, request):
-        try:
-            username = request.POST.get("username")
-            password = request.POST.get("password")
-            print("Submitted username and password:", username, password)
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password)
 
-            user = authenticate(request, username=username, password=password)
-            
-            if user is not None:
-                print("Authentication successful for user:", user.username)
-                login(request, user)
-                return redirect("home")   
-            else:
-                print("Authentication failed")
-                return render(request, "login.html", {"error": "Invalid username or password"})
-        except Exception as e:
-            print("Error during login:", str(e))
-            return render(request, "login.html", {"error": "Something went wrong. Please try again."})
+        if user:
+            login(request, user)
+            return redirect('home_page')
+        return render(request, 'login.html', {'error': 'Invalid email or password'})
         
-class Create_Task(View):
-    
+class Create_Task(LoginRequiredMixin,View):
+    login_url='login'
     def get(self,request):
         form=TaskForm()
-        return render(request,'create_task.html',{'form':form})
+        users=User.objects.all()
+        return render(request,'create_task.html',{'form':form,'users':users})
     
     def post(self,request):
         form= TaskForm(request.POST)
@@ -96,12 +97,21 @@ class Create_Task(View):
                 priority=priority,
                 status=status,
             )
-            return redirect('home')
+            return redirect('home_page')
         else:
             return render(request,'create_task.html',{"form": form ,"error":'Please correct the errors below.'})
 
                 
-             
+class Home_Page(LoginRequiredMixin,View):
+    login_url='login'
+    def get(self,request):
+        task= Task.objects.all()
+        return render(request,'home_page.html',{'tasks':task})
+    
+class Logout(LoginRequiredMixin,View):
+    def get(self,request):
+        logout(request)
+        return redirect('login')
              
 
 
