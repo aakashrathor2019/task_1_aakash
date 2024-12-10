@@ -41,9 +41,9 @@ class Task(Timestampmodel):
     ]
     
     PRIORITY_CHOICES = [
-        (1, 'High'),
-        (2, 'Medium'),
-        (3, 'Low'),
+        ('High', 'High'),
+        ('Medium', 'Medium'),
+        ('Low', 'Low'),
     ]
 
     title = models.CharField(max_length=255)
