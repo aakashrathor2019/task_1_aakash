@@ -1,0 +1,96 @@
+ 
+{% block title %}Create Task{% endblock %}
+<div class="container w-50">
+    <form method="post" action="{% url 'create_task' %}" style="margin: 2px;padding: 3px;">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="text-danger">
+                    {{ form.title.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="text-danger">
+                    {{ form.description.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+         <div class="mb-3">
+            <label for="assigned_to" class="form-label">Assigned To</label>
+            {{ form.assigned_to }}
+            {% if form.assigned_to.errors %}
+                <div class="text-danger">
+                    {{ form.assigned_to.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+  
+        <div class="mb-3">
+            <label for="assigned_by" class="form-label">Assigned By</label>
+            {{ form.assigned_by }}
+            {% if form.assigned_by.errors %}
+                <div class="text-danger">
+                    {{ form.assigned_by.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+  
+        <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date</label>
+            {{ form.start_date }}
+            {% if form.start_date.errors %}
+                <div class="text-danger">
+                    {{ form.start_date.errors }}
+                </div>
+            {% endif %}
+        </div>
+
+
+        <div class="mb-3">
+          <label for="end_date" class="form-label">End Date</label>
+          {{ form.end_date }}
+          {% if form.end_date.errors %}
+              <div class="text-danger">
+                  {{ form.end_date.errors }}
+              </div>
+          {% endif %}
+      </div>
+
+
+      <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        {{ form.status }}
+        {% if form.status.errors %}
+            <div class="text-danger">
+                {{ form.status.errors }}
+            </div>
+        {% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label for="priority" class="form-label">Priority</label>
+        {{ form.priority }}
+        {% if form.priority.errors %}
+            <div class="text-danger">
+                {{ form.priority.errors }}
+            </div>
+        {% endif %}
+      </div>
+
+
+     
+        <button type="submit" class="btn btn-primary btn-lg pull-right">Submit</button>
+    </form>
+</div>
+ 
