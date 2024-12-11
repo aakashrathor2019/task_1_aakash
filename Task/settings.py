@@ -15,6 +15,8 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model
 
+AUTH_USER_MODEL = 'Task_Management_System.User'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
